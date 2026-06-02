@@ -10,7 +10,7 @@
          below and source.extension.vsixmanifest), and the CI workflow derives the GitHub
          release tag from it. Bump this to ship a release. Keep it a numeric VSIX-valid
          version (2-4 dotted parts, no prerelease suffix). -->
-    <Version>0.1.0</Version>
+    <Version>1.0.0</Version>
 
     <!-- VSIX settings -->
     <VSSDKBuildToolsAutoSetup>true</VSSDKBuildToolsAutoSetup>
