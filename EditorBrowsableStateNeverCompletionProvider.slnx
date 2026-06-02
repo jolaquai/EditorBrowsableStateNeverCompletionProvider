@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="EditorBrowsableStateNeverCompletionProvider/EditorBrowsableStateNeverCompletionProvider.csproj">
+    <Deploy />
+  </Project>
+</Solution>

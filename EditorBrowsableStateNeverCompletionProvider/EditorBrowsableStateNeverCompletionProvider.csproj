@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net472</TargetFramework>
+    <Nullable>enable</Nullable>
+    <LangVersion>latest</LangVersion>
+
+    <!-- VSIX settings -->
+    <VSSDKBuildToolsAutoSetup>true</VSSDKBuildToolsAutoSetup>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectCapability Include="CreateVsixContainer" />
+
+    <PackageReference Include="Microsoft.VisualStudio.SDK" Version="17.14.40265" ExcludeAssets="runtime" />
+    <PackageReference Include="Microsoft.VSSDK.BuildTools" Version="18.5.40034" />
+
+    <!-- Compile-only: VS already loads its own Roslyn (Features/Workspaces). Bundling our
+         copy into the VSIX would create a duplicate assembly identity and break MEF
+         composition of the completion provider, so exclude these from the runtime/VSIX. -->
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Features" Version="5.0.0" ExcludeAssets="runtime" />
+  </ItemGroup>
+</Project>
