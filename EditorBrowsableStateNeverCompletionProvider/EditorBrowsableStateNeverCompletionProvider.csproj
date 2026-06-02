@@ -5,17 +5,21 @@
     <Nullable>disable</Nullable>
     <LangVersion>latest</LangVersion>
 
-    <!-- Single source of truth for the extension version. The VSIX manifest is
-         stamped from this via the |%CurrentProject%| token (see source.extension.vsixmanifest),
-         and the CI workflow derives the GitHub release tag from it. Bump this to ship a release. -->
+    <!-- Single source of truth for the extension version. The VSIX manifest is stamped
+         from this via the |%CurrentProject%;GetVsixVersion| token (see GetVsixVersion target
+         below and source.extension.vsixmanifest), and the CI workflow derives the GitHub
+         release tag from it. Bump this to ship a release. Keep it a numeric VSIX-valid
+         version (2-4 dotted parts, no prerelease suffix). -->
     <Version>0.1.0</Version>
-    <!-- The manifest version token reads AssemblyInformationalVersion; without this, the SDK
-         appends "+<gitsha>", producing an invalid VSIX version. Keep it a clean numeric string. -->
-    <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
 
     <!-- VSIX settings -->
     <VSSDKBuildToolsAutoSetup>true</VSSDKBuildToolsAutoSetup>
   </PropertyGroup>
+
+  <!-- Resolves the |%CurrentProject%;GetVsixVersion| token in source.extension.vsixmanifest.
+       The VSSDK detokenizer invokes this target on the project and stamps its return value
+       as the VSIX <Identity Version>, so the manifest version always tracks <Version> above. -->
+  <Target Name="GetVsixVersion" Returns="$(Version)" />
 
   <ItemGroup>
     <ProjectCapability Include="CreateVsixContainer" />
