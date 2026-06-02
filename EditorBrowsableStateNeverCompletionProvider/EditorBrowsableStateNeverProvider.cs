@@ -60,7 +60,7 @@ public sealed class EditorBrowsableNeverProvider : CompletionProvider
         }
     }
 
-    static IEnumerable<ISymbol> Resolve(SemanticModel sm, SyntaxNode left, CancellationToken ct)
+    private static IEnumerable<ISymbol> Resolve(SemanticModel sm, SyntaxNode left, CancellationToken ct)
     {
         var sym = sm.GetSymbolInfo(left, ct).Symbol;
 
@@ -73,7 +73,7 @@ public sealed class EditorBrowsableNeverProvider : CompletionProvider
             yield break;
         }
 
-        ITypeSymbol type = sym as ITypeSymbol ?? sm.GetTypeInfo(left, ct).Type;
+        var type = sym as ITypeSymbol ?? sm.GetTypeInfo(left, ct).Type;
         if (type is null)
             yield break;
 
@@ -86,7 +86,7 @@ public sealed class EditorBrowsableNeverProvider : CompletionProvider
                 yield return m;
     }
 
-    static bool IsHidden(ISymbol s)
+    private static bool IsHidden(ISymbol s)
     {
         foreach (var a in s.GetAttributes())
             if (a.AttributeClass?.Name == "EditorBrowsableAttribute"
@@ -97,30 +97,37 @@ public sealed class EditorBrowsableNeverProvider : CompletionProvider
         return false;
     }
 
-    static bool IsAccessible(ISymbol s, IAssemblySymbol from) => s.DeclaredAccessibility switch
+    private static bool IsAccessible(ISymbol s, IAssemblySymbol from) => s.DeclaredAccessibility switch
     {
         Accessibility.Public => true,
-        Accessibility.ProtectedOrInternal => true,
-        Accessibility.Internal => SymbolEqualityComparer.Default.Equals(s.ContainingAssembly, from)
-                                  || from.GivesAccessTo(s.ContainingAssembly),
+        // protected-internal is accessible if either half grants access. The protected
+        // half is gated separately by the member-access context, so here we only check
+        // the internal half — the same containing-assembly / IVT check used for Internal.
+        Accessibility.ProtectedOrInternal or Accessibility.Internal
+            => SymbolEqualityComparer.Default.Equals(s.ContainingAssembly, from)
+               || from.GivesAccessTo(s.ContainingAssembly),
         _ => false
     };
 
-    static ImmutableArray<string> Tags(ISymbol s) => s switch
+    private static ImmutableArray<string> Tags(ISymbol s) => s switch
     {
-        IMethodSymbol => ImmutableArray.Create(WellKnownTags.Method, WellKnownTags.Public),
-        IPropertySymbol => ImmutableArray.Create(WellKnownTags.Property, WellKnownTags.Public),
-        IFieldSymbol => ImmutableArray.Create(WellKnownTags.Field, WellKnownTags.Public),
-        IEventSymbol => ImmutableArray.Create(WellKnownTags.Event, WellKnownTags.Public),
-        INamespaceSymbol => ImmutableArray.Create(WellKnownTags.Namespace),
-        INamedTypeSymbol n => ImmutableArray.Create(n.TypeKind switch
-        {
-            TypeKind.Interface => WellKnownTags.Interface,
-            TypeKind.Struct => WellKnownTags.Structure,
-            TypeKind.Enum => WellKnownTags.Enum,
-            TypeKind.Delegate => WellKnownTags.Delegate,
-            _ => WellKnownTags.Class
-        }, WellKnownTags.Public),
+        IMethodSymbol => [WellKnownTags.Method, WellKnownTags.Public],
+        IPropertySymbol => [WellKnownTags.Property, WellKnownTags.Public],
+        IFieldSymbol => [WellKnownTags.Field, WellKnownTags.Public],
+        IEventSymbol => [WellKnownTags.Event, WellKnownTags.Public],
+        INamespaceSymbol => [WellKnownTags.Namespace],
+        INamedTypeSymbol n =>
+        [
+            n.TypeKind switch
+                {
+                    TypeKind.Interface => WellKnownTags.Interface,
+                    TypeKind.Struct => WellKnownTags.Structure,
+                    TypeKind.Enum => WellKnownTags.Enum,
+                    TypeKind.Delegate => WellKnownTags.Delegate,
+                    _ => WellKnownTags.Class
+                },
+            WellKnownTags.Public,
+        ],
         _ => ImmutableArray<string>.Empty
     };
 }

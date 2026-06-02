@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net472</TargetFramework>
-    <Nullable>enable</Nullable>
+    <Nullable>disable</Nullable>
     <LangVersion>latest</LangVersion>
 
     <!-- VSIX settings -->
@@ -12,12 +12,20 @@
   <ItemGroup>
     <ProjectCapability Include="CreateVsixContainer" />
 
+    <!-- Referenced by <License> in source.extension.vsixmanifest; must ship in the VSIX.
+         The VSSDK only gathers @(Content) items (not @(None)) for the VSIX, so move it off
+         the default None glob and declare it as Content. -->
+    <None Remove="LICENSE" />
+    <Content Include="LICENSE">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+
     <PackageReference Include="Microsoft.VisualStudio.SDK" Version="17.14.40265" ExcludeAssets="runtime" />
     <PackageReference Include="Microsoft.VSSDK.BuildTools" Version="18.5.40034" />
 
     <!-- Compile-only: VS already loads its own Roslyn (Features/Workspaces). Bundling our
          copy into the VSIX would create a duplicate assembly identity and break MEF
          composition of the completion provider, so exclude these from the runtime/VSIX. -->
-    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Features" Version="5.0.0" ExcludeAssets="runtime" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Features" Version="4.0.1" ExcludeAssets="runtime" />
   </ItemGroup>
 </Project>
