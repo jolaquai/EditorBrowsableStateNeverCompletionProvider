@@ -3,7 +3,7 @@
   <Metadata>
     <!-- Version is stamped from the project's <Version> at build time (single source of truth).
          Do not hardcode it here; bump <Version> in the .csproj instead. -->
-    <Identity Id="EditorBrowsableStateNeverCompletionProvider.392ff5a5-fca5-44ab-93a3-d4f3bdcd1f4a" Version="|%CurrentProject%|" Language="en-US" Publisher="jolaquai" />
+    <Identity Id="EditorBrowsableStateNeverCompletionProvider.392ff5a5-fca5-44ab-93a3-d4f3bdcd1f4a" Version="|%CurrentProject%;GetVsixVersion|" Language="en-US" Publisher="jolaquai" />
     <DisplayName>EditorBrowsableStateNeverCompletionProvider</DisplayName>
     <Description>VS extension that surfaces members marked [EditorBrowsable(EditorBrowsableState.Never)] in C# IntelliSense completion.</Description>
     <License>LICENSE</License>
