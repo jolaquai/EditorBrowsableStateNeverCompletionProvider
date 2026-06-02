@@ -5,6 +5,14 @@
     <Nullable>disable</Nullable>
     <LangVersion>latest</LangVersion>
 
+    <!-- Single source of truth for the extension version. The VSIX manifest is
+         stamped from this via the |%CurrentProject%| token (see source.extension.vsixmanifest),
+         and the CI workflow derives the GitHub release tag from it. Bump this to ship a release. -->
+    <Version>0.1.0</Version>
+    <!-- The manifest version token reads AssemblyInformationalVersion; without this, the SDK
+         appends "+<gitsha>", producing an invalid VSIX version. Keep it a clean numeric string. -->
+    <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
+
     <!-- VSIX settings -->
     <VSSDKBuildToolsAutoSetup>true</VSSDKBuildToolsAutoSetup>
   </PropertyGroup>

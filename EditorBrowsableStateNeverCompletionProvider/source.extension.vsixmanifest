@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
   <Metadata>
-    <Identity Id="EditorBrowsableStateNeverCompletionProvider.392ff5a5-fca5-44ab-93a3-d4f3bdcd1f4a" Version="1.0" Language="en-US" Publisher="jolaquai" />
+    <!-- Version is stamped from the project's <Version> at build time (single source of truth).
+         Do not hardcode it here; bump <Version> in the .csproj instead. -->
+    <Identity Id="EditorBrowsableStateNeverCompletionProvider.392ff5a5-fca5-44ab-93a3-d4f3bdcd1f4a" Version="|%CurrentProject%|" Language="en-US" Publisher="jolaquai" />
     <DisplayName>EditorBrowsableStateNeverCompletionProvider</DisplayName>
     <Description>VS extension that surfaces members marked [EditorBrowsable(EditorBrowsableState.Never)] in C# IntelliSense completion.</Description>
     <License>LICENSE</License>
