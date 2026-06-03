@@ -5,15 +5,25 @@
     <Nullable>disable</Nullable>
     <LangVersion>latest</LangVersion>
 
+    <!-- The Tools > Options page (GeneralOptionsPage) hosts a WPF control with real checkboxes
+         via UIElementDialogPage, instead of the default property-grid (which renders bools as a
+         True/False dropdown). WPF assemblies are provided by the runtime; nothing is bundled. -->
+    <UseWPF>true</UseWPF>
+
     <!-- Single source of truth for the extension version. The VSIX manifest is stamped
          from this via the |%CurrentProject%;GetVsixVersion| token (see GetVsixVersion target
          below and source.extension.vsixmanifest), and the CI workflow derives the GitHub
          release tag from it. Bump this to ship a release. Keep it a numeric VSIX-valid
          version (2-4 dotted parts, no prerelease suffix). -->
-    <Version>1.0.0</Version>
+    <Version>1.1.0</Version>
 
     <!-- VSIX settings -->
     <VSSDKBuildToolsAutoSetup>true</VSSDKBuildToolsAutoSetup>
+
+    <!-- Generate the .pkgdef from OptionsPackage's registration attributes and include it in the
+         VSIX. Without this the |%CurrentProject%;PkgdefProjectOutputGroup| asset token in the
+         manifest does not resolve and the Tools > Options page is never registered. -->
+    <GeneratePkgDefFile>true</GeneratePkgDefFile>
   </PropertyGroup>
 
   <!-- Resolves the |%CurrentProject%;GetVsixVersion| token in source.extension.vsixmanifest.

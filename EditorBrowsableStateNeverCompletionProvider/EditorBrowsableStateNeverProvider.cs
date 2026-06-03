@@ -44,6 +44,10 @@ public sealed class EditorBrowsableNeverProvider : CompletionProvider
         var fromAsm = sm.Compilation.Assembly;
         var seen = new HashSet<(string, SymbolKind)>();
 
+        // Snapshot the user options once per invocation (see GeneralOptionsPage / CompletionSettings).
+        var sortToBottom = CompletionSettings.SortHiddenToBottom;
+        var showTag = CompletionSettings.ShowHiddenTag;
+
         foreach (var s in Resolve(sm, left, ct))
         {
             if (s.IsImplicitlyDeclared)
@@ -65,11 +69,13 @@ public sealed class EditorBrowsableNeverProvider : CompletionProvider
             context.AddItem(CompletionItem.Create(
                 displayText: s.Name,
                 filterText: s.Name,
-                sortText: "~" + s.Name,
+                // "~" sorts after normal members (which use their plain name); dropping it lets
+                // hidden members sort alphabetically interleaved with the rest.
+                sortText: sortToBottom ? "~" + s.Name : s.Name,
                 properties: props,
                 tags: Tags(s),
                 rules: CompletionItemRules.Default,
-                inlineDescription: "(hidden)"));
+                inlineDescription: showTag ? "(hidden)" : null));
         }
     }
 
